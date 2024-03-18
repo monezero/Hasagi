@@ -1,3 +1,4 @@
+"use client";
 import { FieldValues, UseControllerProps } from "react-hook-form";
 import { useController } from "react-hook-form";
 import { ChangeEvent, ReactNode } from "react";
@@ -34,12 +35,12 @@ const Searchbar = <TFieldValues extends FieldValues>({
   return (
     <>
       <div
-        className="bg-white flex-row items-center pl-[4%] w-[100%] rounded-md min-h-14 shadow-default"
+        className="bg-white items-center text-black text-xl pl-4 w-[50%] py-2 rounded-sm min-h-14 shadow-default"
         style={{ ...containerStyle, marginTop }}
       >
         {type ? (
           <input
-            className="text-xl pl-3 w-[85%]"
+            className="text-xl pl-3 w-[100%] py-2 outline-none"
             onChange={field.onChange}
             ref={field.ref}
             type={type}
@@ -47,7 +48,7 @@ const Searchbar = <TFieldValues extends FieldValues>({
           />
         ) : (
           <input
-            className="text-xl pl-3 w-[85%]"
+            className="text-xl pl-3 w-[100%] py-2 outline-none"
             onChange={field.onChange}
             ref={field.ref}
             onBlur={field.onBlur}
