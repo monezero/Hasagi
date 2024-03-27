@@ -12,7 +12,7 @@ interface SummonerResponse {
   level: number;
 }
 
-export async function GET(req: NextRequest, res: any){
+export async function getSummoner(req: NextRequest, res: any){
   console.log("req.query", req.nextUrl.searchParams.get("summonerName"));
   const summonerName = req.nextUrl.searchParams.get("summonerName");
   try {
@@ -25,9 +25,10 @@ export async function GET(req: NextRequest, res: any){
       }
       
     );
+    console.log
     return NextResponse.json(response.data);
 
-    res.status(200).json(response.data);
+  
   } catch (error) {
     res.status(500).json({ error: "Error fetching data from Riot API." });
   }
