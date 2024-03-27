@@ -37,3 +37,20 @@ export async function getMatchHistory(req: NextRequest, res: any) {
     res.status(500).json({ error: 'Error fetching data from Riot API' });
   }
 }
+
+
+export async function fetchMatchHistory(puuid: string, summonerName: string): Promise<MatchHistoryResponse> {
+  try {
+    const response: AxiosResponse<MatchHistoryResponse> = await axios.get(
+      `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids`,
+      {
+        headers: {
+          "X-Riot-Token": process.env.RIOT_API_KEY,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error('Error fetching match history from Riot API.');
+  }
+}
