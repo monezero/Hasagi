@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { fetchMatchHistory, getMatchHistory } from "../getMatchHistory/route";
+
 interface SummonerResponse {
   accountid: string;
   profileIconId: number;
@@ -12,8 +12,7 @@ interface SummonerResponse {
   level: number;
 }
 
-export async function getSummonerTest(req: NextRequest, res: any){
-  console.log("req.query", req.nextUrl.searchParams.get("summonerName"));
+export default async function getSummonerTest(req: NextRequest) {
   const summonerName = req.nextUrl.searchParams.get("summonerName");
   try {
     const response: AxiosResponse<SummonerResponse> = await axios.get(
@@ -23,16 +22,12 @@ export async function getSummonerTest(req: NextRequest, res: any){
           "X-Riot-Token": process.env.RIOT_API_KEY,
         },
       }
-      
     );
-    console.log(response.data)
-    console.log(response.data.puuid)
-    console.log(response.data.name)
-    console.log
-    return NextResponse.json(response.data);
-
-  
+    console.log(response.data);
+    console.log(response.data.puuid);
+    return  NextResponse.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Error fetching data from Riot API." });
+    console.error(error);
+    return  NextResponse.json({ error: 'Error fetching summoner data' }, { status: 500 });
   }
 }

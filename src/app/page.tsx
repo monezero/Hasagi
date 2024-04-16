@@ -14,9 +14,16 @@ export default function Home() {
       <div className="relative">
         <title>Projeto Riot</title>
         <div className="flex flex-col items-center justify-center">
-          <div className="text-4xl text-center shadow-text-shadow-blue text-white mt-16 pb-5 pl-5 pr-5 pt-5 bg-ugg opacity-80">
-            U.GG Pirateado
-          </div>
+          <div
+            className=" shadow-text-shadow-blue  mt-16 pb-5 pl-5 pr-5 pt-5  opacity-80"
+            style={{
+              backgroundImage: "url(/hasagi_black.png)",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              height: "210px",
+              width: "400px",
+            }}
+          ></div>
           <div className="pt-10 flex flex-col items-center justify-center w-[100%]">
             <FormProvider {...formMethods}>
               <Searchbar placeholder="Pesquisar" name="Pesquisar"></Searchbar>

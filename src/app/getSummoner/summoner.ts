@@ -1,7 +1,7 @@
 
 import axios, { AxiosResponse } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { fetchMatchHistory, getMatchHistory } from "../getMatchHistory/route";
+import { fetchMatchHistory, getMatchHistory } from "../getMatchHistory/matchhistory";
 interface SummonerResponse {
   accountid: string;
   profileIconId: number;
@@ -13,7 +13,7 @@ interface SummonerResponse {
   level: number;
 }
 
-export async function getSummoner(req: NextRequest, res: any){
+export default async function getSummoner(req: NextRequest, res: any){
   console.log("req.query", req.nextUrl.searchParams.get("summonerName"));
   const summonerName = req.nextUrl.searchParams.get("summonerName");
   try {
