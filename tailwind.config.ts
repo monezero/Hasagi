@@ -9,7 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "ugg": "#06061a"
+        "ugg": "#06061a",
+        "bg-ugg": "#181a1b",
+        "text-ugg":"#4e5866",
+        "text-ugg-white": "#92b3cd"
       },
       backgroundColor: {
         "ugg": "#06061a"
