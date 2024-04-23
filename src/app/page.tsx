@@ -1,13 +1,18 @@
 "use client";
 import { useForm, FormProvider } from "react-hook-form";
-import { ReactComponent as LogoSvg } from "./logo.svg";
 import Searchbar from "./components/searchbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { fetchTopChampionMastery } from "./api/posts/route";
 
 export default function Home() {
   const [backgroundImage, setBackgroundImage] = useState("");
+  const [input, setInput] = useState("");
 
+  const fetchChampions = async () => {
+    const topChampionMastery = await fetchTopChampionMastery(puuid);
+    console.log(topChampionMastery);
+  };
   useEffect(() => {
     const fetchChampions = async () => {
       try {
@@ -52,8 +57,12 @@ export default function Home() {
           ></div>
           <div className="pt-10 flex flex-col items-center justify-center w-[100%]">
             <FormProvider {...formMethods}>
-              <LogoSvg />
-              <Searchbar placeholder="Pesquisar" name="Pesquisar"></Searchbar>
+              <Searchbar
+                placeholder="Pesquisar"
+                name="Pesquisar"
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+              ></Searchbar>
             </FormProvider>
           </div>
         </div>

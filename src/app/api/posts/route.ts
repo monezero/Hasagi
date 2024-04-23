@@ -48,15 +48,45 @@ export async function GET(req: NextRequest) {
         },
       }
     );
+
+    const topChampionMasteryResponse: AxiosResponse = await axios.get(
+      `https://br1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}/top`,
+      {
+        headers: {
+          "X-Riot-Token": process.env.RIOT_API_KEY,
+        }
+      }
+    );
+
+  
     console.log(response.data);
     console.log(response.data.puuid);
     return  NextResponse.json({
       summonerData: response.data,
       matchHistory: matchHistoryResponse.data,
+      topChampionMastery: topChampionMasteryResponse.data,
       matchDetails: matchResponse.data,
+      
     })
   } catch (error) {
     console.error(error);
     return  NextResponse.json({ error: 'Error fetching summoner data' }, { status: 500 });
   }
 }
+
+export const fetchTopChampionMastery = async (puuid: string) => {
+  try {
+    const topChampionMasteryResponse: AxiosResponse = await axios.get(
+      `https://br1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}/top`,
+      {
+        headers: {
+          "X-Riot-Token": process.env.RIOT_API_KEY,
+        },
+      }
+    );
+    return topChampionMasteryResponse.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching top champion mastery data");
+  }
+};
