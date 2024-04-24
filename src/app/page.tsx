@@ -3,18 +3,34 @@ import { useForm, FormProvider } from "react-hook-form";
 import Searchbar from "./components/searchbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { fetchTopChampionMastery } from "./api/posts/route";
+import { Logo } from "./components/svg";
 
 export default function Home() {
   const [backgroundImage, setBackgroundImage] = useState("");
+  const { register, handleSubmit } = useForm();
   const [input, setInput] = useState("");
 
-  const fetchChampions = async () => {
-    const topChampionMastery = await fetchTopChampionMastery(puuid);
-    console.log(topChampionMastery);
+  const fetchSummoner = async () => {
+    const [gameName, tagLine] = input.split("#");
+    try {
+      const summonerResponse = await axios.get(
+        `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`,
+        {
+          headers: {
+            "X-Riot-Token": process.env.RIOT_API_KEY,
+          },
+        }
+      );
+      const puuid = summonerResponse.data.puuid;
+      return summonerResponse.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error("Error fetching summoner data");
+    }
   };
+
   useEffect(() => {
-    const fetchChampions = async () => {
+    const fetchChampionsBackground = async () => {
       try {
         const response = await axios.get(
           "http://ddragon.leagueoflegends.com/cdn/11.22.1/data/en_US/champion.json"
@@ -30,9 +46,12 @@ export default function Home() {
       }
     };
 
-    fetchChampions();
+    fetchChampionsBackground();
   }, []);
-
+  const onSubmit = (data) => {
+    setInput(data.input);
+    fetchSummoner();
+  };
   const formMethods = useForm();
   return (
     <header className="relative bg-ugg h-screen">
@@ -60,11 +79,21 @@ export default function Home() {
               <Searchbar
                 placeholder="Pesquisar"
                 name="Pesquisar"
-                value={input}
+                inputref={register}
                 onChange={(event) => setInput(event.target.value)}
-              ></Searchbar>
+              >
+                <button
+                  className="absolute right-0 top-0 h-full px-2"
+                  onClick={fetchSummoner}
+                >
+                  <img src="/searchicon.png" alt="pesquisar" />
+                </button>
+              </Searchbar>
             </FormProvider>
           </div>
+        </div>
+        <div className="" style={{ position: "absolute", left: 0, top: -30 }}>
+          <Logo className="h-40 w-40 " />
         </div>
       </div>
     </header>

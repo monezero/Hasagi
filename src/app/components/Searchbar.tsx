@@ -21,6 +21,7 @@ const Searchbar = <TFieldValues extends FieldValues>({
   containerStyle,
   marginTop,
   type,
+  children,
 
   ...props
 }: Props<TFieldValues>) => {
@@ -35,7 +36,7 @@ const Searchbar = <TFieldValues extends FieldValues>({
   return (
     <>
       <div
-        className="bg-ugg items-center text-black text-xl pl-4 w-[50%] py-2 rounded-sm min-h-14 shadow-default"
+        className="relative bg-ugg items-center text-black text-xl pl-4 w-[50%] py-2 rounded-sm min-h-14 shadow-default"
         style={{ ...containerStyle, marginTop }}
       >
         {type ? (
@@ -55,6 +56,7 @@ const Searchbar = <TFieldValues extends FieldValues>({
             {...props}
           />
         )}
+        {children}
       </div>
       <div className="text-lg text-red-600 pt-[0.5%] pl-[3%]">
         {error?.message}
