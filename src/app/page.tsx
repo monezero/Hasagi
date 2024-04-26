@@ -1,32 +1,38 @@
 "use client";
+require("dotenv").config();
 import { useForm, FormProvider } from "react-hook-form";
 import Searchbar from "./components/searchbar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Logo } from "./components/svg";
 
 export default function Home() {
   const [backgroundImage, setBackgroundImage] = useState("");
   const { register, handleSubmit } = useForm();
-  const [input, setInput] = useState("");
+  const [searchValue, setSearchValue] = useState("");
 
-  const fetchSummoner = async () => {
-    const [gameName, tagLine] = input.split("#");
+  const fetchSummoner = async (gameName: string, tagLine: string) => {
     try {
       const summonerResponse = await axios.get(
-        `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`,
-        {
-          headers: {
-            "X-Riot-Token": process.env.RIOT_API_KEY,
-          },
-        }
+        `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(
+          gameName
+        )}/${encodeURIComponent(tagLine)}?api_key=${
+          process.env.NEXT_PUBLIC_RIOT_API_KEY
+        }`
       );
+      console.log(summonerResponse.data);
       const puuid = summonerResponse.data.puuid;
       return summonerResponse.data;
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching summoner data", error);
       throw new Error("Error fetching summoner data");
     }
+  };
+
+  const handleSearch = async (data: any) => {
+    const { gameName, tagLine } = data;
+    const summoner = await fetchSummoner(gameName, tagLine);
+    setSearchValue(summoner.gameName + summoner.tagLine);
   };
 
   useEffect(() => {
@@ -48,11 +54,7 @@ export default function Home() {
 
     fetchChampionsBackground();
   }, []);
-  const onSubmit = (data) => {
-    setInput(data.input);
-    fetchSummoner();
-  };
-  const formMethods = useForm();
+
   return (
     <header className="relative bg-ugg h-screen">
       <div
@@ -75,21 +77,9 @@ export default function Home() {
             }}
           ></div>
           <div className="pt-10 flex flex-col items-center justify-center w-[100%]">
-            <FormProvider {...formMethods}>
-              <Searchbar
-                placeholder="Pesquisar"
-                name="Pesquisar"
-                inputref={register}
-                onChange={(event) => setInput(event.target.value)}
-              >
-                <button
-                  className="absolute right-0 top-0 h-full px-2"
-                  onClick={fetchSummoner}
-                >
-                  <img src="/searchicon.png" alt="pesquisar" />
-                </button>
-              </Searchbar>
-            </FormProvider>
+            <Searchbar onSearch={handleSearch} />
+            <h2 className="text-2xl mt-20 mx-2 underline">Resultado:</h2>
+            <p className="text-2xl m-2">{searchValue}</p>
           </div>
         </div>
         <div className="" style={{ position: "absolute", left: 0, top: -30 }}>
