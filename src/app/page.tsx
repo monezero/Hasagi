@@ -13,16 +13,22 @@ export default function Home() {
 
   const fetchSummoner = async (gameName: string, tagLine: string) => {
     try {
-      const summonerResponse = await axios.get(
-        `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(
-          gameName
-        )}/${encodeURIComponent(tagLine)}?api_key=${
-          process.env.NEXT_PUBLIC_RIOT_API_KEY
-        }`
+      //const summonerResponse = await axios.get(
+      //  `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(
+      //    gameName
+      //  )}/${encodeURIComponent(tagLine)}?api_key=${
+      //    process.env.NEXT_PUBLIC_RIOT_API_KEY
+      //  }`
+      //);
+
+      const response = await axios.get(
+        `/api/posts?gameName=${gameName}&tagLine=${tagLine}`
       );
-      console.log(summonerResponse.data);
-      const puuid = summonerResponse.data.puuid;
-      return summonerResponse.data;
+
+      const summonerResponse = response.data.summonerData;
+      console.log(summonerResponse);
+      const puuid = summonerResponse.puuid;
+      return summonerResponse;
     } catch (error) {
       console.error("Error fetching summoner data", error);
       throw new Error("Error fetching summoner data");
@@ -30,6 +36,7 @@ export default function Home() {
   };
 
   const handleSearch = async (data: any) => {
+    console.log(data);
     const { gameName, tagLine } = data;
     const summoner = await fetchSummoner(gameName, tagLine);
     setSearchValue(summoner.gameName + summoner.tagLine);
@@ -42,8 +49,9 @@ export default function Home() {
           "http://ddragon.leagueoflegends.com/cdn/11.22.1/data/en_US/champion.json"
         );
         const champions = Object.values(response.data.data);
-        const randomChampion =
-          champions[Math.floor(Math.random() * champions.length)];
+        const randomChampion = champions[
+          Math.floor(Math.random() * champions.length)
+        ] as { id: string };
         setBackgroundImage(
           `http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${randomChampion.id}_0.jpg`
         );

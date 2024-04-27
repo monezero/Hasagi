@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
       `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`,
       {
         headers: {
-          "X-Riot-Token": process.env.RIOT_API_KEY,
+          "X-Riot-Token": process.env.NEXT_PUBLIC_RIOT_API_KEY,
         },
       }
     );
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
       `https://br1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}/top`,
       {
         headers: {
-          "X-Riot-Token": process.env.RIOT_API_KEY,
+          "X-Riot-Token": process.env.NEXT_PUBLIC_RIOT_API_KEY,
         }
       }
     );
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
       `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids`,
       {
         headers: {
-          "X-Riot-Token": process.env.RIOT_API_KEY,
+          "X-Riot-Token": process.env.NEXT_PUBLIC_RIOT_API_KEY,
         },
       }
     );
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
       `https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}`,
       {
         headers: {
-          "X-Riot-Token": process.env.RIOT_API_KEY,
+          "X-Riot-Token": process.env.NEXT_PUBLIC_RIOT_API_KEY,
         },
       }
     );
