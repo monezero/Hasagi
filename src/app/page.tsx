@@ -5,9 +5,11 @@ import Searchbar from "./components/searchbar";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Logo } from "./components/svg";
+import { SummonerInfo } from "./components/summonerInfo";
 
 export default function Home() {
   const [backgroundImage, setBackgroundImage] = useState("");
+  const [puuid, setPuuid] = useState(null);
   const { register, handleSubmit } = useForm();
   const [searchValue, setSearchValue] = useState("");
 
@@ -26,8 +28,10 @@ export default function Home() {
       );
 
       const summonerResponse = response.data.summonerData;
+      setPuuid(summonerResponse.puuid);
       console.log(summonerResponse);
       const puuid = summonerResponse.puuid;
+      console.log(puuid);
       return summonerResponse;
     } catch (error) {
       console.error("Error fetching summoner data", error);
@@ -39,7 +43,7 @@ export default function Home() {
     console.log(data);
     const { gameName, tagLine } = data;
     const summoner = await fetchSummoner(gameName, tagLine);
-    setSearchValue(summoner.gameName + summoner.tagLine);
+    setSearchValue(`${summoner.gameName} #${summoner.tagLine}`);
   };
 
   useEffect(() => {
@@ -88,6 +92,7 @@ export default function Home() {
             <Searchbar onSearch={handleSearch} />
             <h2 className="text-2xl mt-20 mx-2 underline">Resultado:</h2>
             <p className="text-2xl m-2">{searchValue}</p>
+            {puuid && <SummonerInfo puuid={puuid} />}
           </div>
         </div>
         <div className="" style={{ position: "absolute", left: 0, top: -30 }}>
