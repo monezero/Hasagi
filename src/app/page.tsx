@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Logo } from "./components/svg";
 import { SummonerInfo } from "./components/summonerInfo";
+import { Db } from "mongodb";
 
 export default function Home() {
   const [backgroundImage, setBackgroundImage] = useState("");
@@ -26,7 +27,9 @@ export default function Home() {
       const response = await axios.get(
         `/api/posts?gameName=${gameName}&tagLine=${tagLine}`
       );
-
+      const summonerData = response.data.summonerData;
+      console.log("summonerData", summonerData);
+      await insertSummonerData(summonerData);
       const summonerResponse = response.data.summonerData;
       setPuuid(summonerResponse.puuid);
       console.log(summonerResponse);
@@ -38,6 +41,15 @@ export default function Home() {
       throw new Error("Error fetching summoner data");
     }
   };
+
+  async function insertSummonerData(summonerData: any) {
+    const db = await connect();
+    const result = await db.collection("summoners").insertOne(summonerData);
+    console.log(
+      `New summoner created with the following id: ${result.insertedId}`
+    );
+    close();
+  }
 
   const handleSearch = async (data: any) => {
     console.log(data);
