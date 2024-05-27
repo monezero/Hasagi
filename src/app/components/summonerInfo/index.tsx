@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-export const SummonerInfo = ({ puuid }) => {
-  const [summonerData, setSummonerData] = useState(null);
+interface SummonerData {
+  name: string;
+  profileIconId: number;
+  summonerLevel: number;
+}
+
+export const SummonerInfo = ({ puuid, gameName, tagLine }) => {
+  const [summonerData, setSummonerData] = useState<SummonerData | null>(null);
 
   useEffect(() => {
     const fetchSummoner = async () => {
@@ -28,7 +34,9 @@ export const SummonerInfo = ({ puuid }) => {
 
   return (
     <div>
-      <h1>{summonerData.name}</h1>
+      <h1>
+        {gameName} #{tagLine}
+      </h1>
       <img
         src={`http://ddragon.leagueoflegends.com/cdn/14.9.1/img/profileicon/${summonerData.profileIconId}.png`}
         alt="Summoner Icon"

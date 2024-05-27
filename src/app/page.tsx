@@ -1,58 +1,46 @@
 "use client";
-require("dotenv").config();
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Searchbar from "./components/searchbar";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Logo } from "./components/svg";
 import { SummonerInfo } from "./components/summonerInfo";
-import { Db } from "mongodb";
 
 export default function Home() {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [puuid, setPuuid] = useState(null);
+  const [gameName, setGameName] = useState("");
+  const [tagLine, setTagLine] = useState("");
   const { register, handleSubmit } = useForm();
   const [searchValue, setSearchValue] = useState("");
 
   const fetchSummoner = async (gameName: string, tagLine: string) => {
     try {
-      //const summonerResponse = await axios.get(
-      //  `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(
-      //    gameName
-      //  )}/${encodeURIComponent(tagLine)}?api_key=${
-      //    process.env.NEXT_PUBLIC_RIOT_API_KEY
-      //  }`
-      //);
-
       const response = await axios.get(
         `/api/posts?gameName=${gameName}&tagLine=${tagLine}`
       );
-      const summonerData = response.data.summonerData;
-      console.log("summonerData", summonerData);
-      await insertSummonerData(summonerData);
+
       const summonerResponse = response.data.summonerData;
       setPuuid(summonerResponse.puuid);
-      console.log(summonerResponse);
-      const puuid = summonerResponse.puuid;
-      console.log(puuid);
+      setGameName(summonerResponse.gameName);
+      setTagLine(summonerResponse.tagLine);
+      console.log("Summoner response:", summonerResponse);
+
+      const mongoResponse = await axios.post("/api/posts/insertSummonerData", {
+        gameName: summonerResponse.gameName,
+        tagLine: summonerResponse.tagLine,
+        summonerLevel: summonerResponse.summonerLevel,
+      });
+      console.log("Mongo response:", mongoResponse);
       return summonerResponse;
     } catch (error) {
-      console.error("Error fetching summoner data", error);
+      console.error("Error fetching summoner data:", error);
       throw new Error("Error fetching summoner data");
     }
   };
 
-  async function insertSummonerData(summonerData: any) {
-    const db = await connect();
-    const result = await db.collection("summoners").insertOne(summonerData);
-    console.log(
-      `New summoner created with the following id: ${result.insertedId}`
-    );
-    close();
-  }
-
   const handleSearch = async (data: any) => {
-    console.log(data);
+    console.log("Search data:", data);
     const { gameName, tagLine } = data;
     const summoner = await fetchSummoner(gameName, tagLine);
     setSearchValue(`${summoner.gameName} #${summoner.tagLine}`);
@@ -72,10 +60,9 @@ export default function Home() {
           `http://ddragon.leagueoflegends.com/cdn/img/champion/splash/${randomChampion.id}_0.jpg`
         );
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching champion background:", error);
       }
     };
-
     fetchChampionsBackground();
   }, []);
 
@@ -88,10 +75,9 @@ export default function Home() {
       <div className="absolute inset-0 bg-gradient-to-center opacity-150"></div>
       <div className="relative">
         <title>Hasagi</title>
-
         <div className="flex flex-col items-center justify-center object-contain">
           <div
-            className="    pb-5 pl-5 pr-5 pt-5  opacity-80"
+            className="pb-5 pl-5 pr-5 pt-5 opacity-80"
             style={{
               backgroundImage: "url(/hasagi_no_bg.png)",
               backgroundSize: "cover",
@@ -104,7 +90,13 @@ export default function Home() {
             <Searchbar onSearch={handleSearch} />
             <h2 className="text-2xl mt-20 mx-2 underline">Resultado:</h2>
             <p className="text-2xl m-2">{searchValue}</p>
-            {puuid && <SummonerInfo puuid={puuid} />}
+            {puuid && (
+              <SummonerInfo
+                puuid={puuid}
+                gameName={gameName}
+                tagLine={tagLine}
+              />
+            )}
           </div>
         </div>
         <div className="" style={{ position: "absolute", left: 0, top: -30 }}>
