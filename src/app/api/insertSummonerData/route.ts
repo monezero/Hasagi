@@ -1,18 +1,16 @@
 import { MongoClient } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest } from 'next/server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('Request method:', req.method);
-  console.log('Request body:', req.body);
+export async function POST(request: Request, res: NextApiResponse) {
+  const req = request.json()
 
-  if (req.method === 'POST') {
-    const { gameName, tagLine, summonerLevel } = req.body;
+    const { gameName, tagLine, summonerLevel } = await req
 
     const connectionString = process.env.MONGODB_CONNECTION_STRING;
     if (!connectionString) {
       console.error('MongoDB connection string is not defined.');
-      res.status(500).json({ message: 'Server configuration error' });
-      return;
+      return new Response(JSON.stringify({ message: 'Server configuration error' }), {status: 500});
     }
 
     const client = new MongoClient(connectionString);
@@ -23,14 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const collection = db.collection('summoners');
       const result = await collection.insertOne({ gameName, tagLine, summonerLevel });
       console.log('Insert result:', result);
-      res.status(200).json({ message: 'Summoner data inserted!', id: result.insertedId });
+      return Response.json({ message: 'Summoner data inserted!', id: result.insertedId });
     } catch (error) {
       console.error('Error inserting summoner data:', error);
-      res.status(500).json({ message: 'Error inserting summoner data' });
+      return new Response(JSON.stringify({ message: 'Error inserting summoner data' }), {status: 400});
     } finally {
       await client.close();
     }
-  } else {
-    res.status(400).json({ message: 'Invalid request method!' });
-  }
 }

@@ -26,7 +26,7 @@ export default function Home() {
       setTagLine(summonerResponse.tagLine);
       console.log("Summoner response:", summonerResponse);
 
-      const mongoResponse = await axios.post("/api/posts/insertSummonerData", {
+      const mongoResponse = await axios.post("/api/insertSummonerData", {
         gameName: summonerResponse.gameName,
         tagLine: summonerResponse.tagLine,
         summonerLevel: summonerResponse.summonerLevel,

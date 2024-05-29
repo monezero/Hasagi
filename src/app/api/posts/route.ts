@@ -13,9 +13,6 @@ interface SummonerResponse {
   level: number;
 }
 
-
-
-
 export async function GET(req: NextRequest) {
   const gameName = req.nextUrl.searchParams.get("gameName");
   const tagLine = req.nextUrl.searchParams.get("tagLine");
